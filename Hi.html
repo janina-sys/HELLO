@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Valentine</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffe6e6; /* Soft pink background */
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            overflow: hidden; /* Prevents scrollbars when the button moves */
+            margin: 0;
+            color: #ff4d4d;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 50px;
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+        }
+
+        #yes-btn {
+            background-color: #ff4d4d;
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.4);
+        }
+
+        #no-btn {
+            background-color: #999;
+            position: absolute; /* This allows it to move freely */
+        }
+
+        /* --- NEW: Contract Screen Styling --- */
+        #contract-container {
+            display: none;
+            background: #fdfdfd;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            max-width: 450px;
+            z-index: 10;
+        }
+
+        #contract-container h2 {
+            font-size: 1.4rem;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: normal;
+        }
+
+        .contract-list {
+            text-align: left;
+            list-style-type: none;
+            padding: 0;
+            color: #444;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .contract-list li {
+            margin-bottom: 18px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .contract-list li::before {
+            content: "•";
+            color: #d1203f; /* Darker red matching the image bullets */
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        .effective-text {
+            font-style: italic;
+            color: #666;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #agree-btn {
+            background-color: #db0031;
+            padding: 15px 40px;
+            box-shadow: 0 4px 15px rgba(219, 0, 49, 0.4);
+            width: 100%;
+        }
+
+        /* Hidden success screen initially */
+        #success-container {
+            display: none;
+            z-index: 10;
+        }
+
+        #success-container p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: #cc0000;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Floating Hearts Animation */
+        .heart {
+            position: absolute;
+            color: #ff4d4d;
+            font-size: 24px;
+            bottom: -50px;
+            animation: floatUp linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-120vh) rotate(360deg) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="question-container">
+        <h1>Will you be my Valentine? 🥺❤️</h1>
+        <div style="position: relative; height: 100px;">
+            <button id="yes-btn" class="btn">YES!</button>
+            <button id="no-btn" class="btn">No</button>
+        </div>
+    </div>
+
+    <div id="contract-container">
+        <h2>By clicking YES you agree to:</h2>
+        <ul class="contract-list">
+            <li>Unlimited cuddles, surprise hugs & soft kisses</li>
+            <li>Random chocolates, stolen hoodies & shared desserts</li>
+            <li>Listening, understanding & never invalidating your feelings</li>
+            <li>Growing together — dreams, struggles & everything in between</li>
+            <li>Being deeply loved by someone who's serious about you</li>
+        </ul>
+        <p class="effective-text">Effective immediately!</p>
+        <button id="agree-btn" class="btn">YES, I Agree! ✨</button>
+    </div>
+
+    <div id="success-container">
+        <h1>YAY! You said YES! 🎉💖</h1>
+        <p>
+            I knew you couldn't resist! 😉 <br><br>
+            Honestly, I fell for you the moment I met you. Thank you for accepting my proposal and making me the happiest person in the world. I promise to always treat you like a queen, to cherish our moments, and to love you endlessly. <br><br>
+            I love you! ❤️
+        </p>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const agreeBtn = document.getElementById('agree-btn'); // New button
+        const questionContainer = document.getElementById('question-container');
+        const contractContainer = document.getElementById('contract-container'); // New container
+        const successContainer = document.getElementById('success-container');
+
+        // Function to move the 'No' button randomly
+        function moveButton() {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            const randomX = Math.random() * (windowWidth - btnWidth);
+            const randomY = Math.random() * (windowHeight - btnHeight);
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton);
+
+        // Step 1 -> Step 2: Show the contract
+        yesBtn.addEventListener('click', () => {
+            questionContainer.style.display = 'none';
+            contractContainer.style.display = 'block';
+        });
+
+        // Step 2 -> Step 3: Accept contract and show success
+        agreeBtn.addEventListener('click', () => {
+            contractContainer.style.display = 'none';
+            successContainer.style.display = 'block';
+            startLoverThings(); // Start the hearts animation now!
+        });
+
+        // Function to create floating hearts
+        function startLoverThings() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+
+                document.body.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000);
+            }, 300); 
+        }
+    </script>
+</body>
+</html>
+
